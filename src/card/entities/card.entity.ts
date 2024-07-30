@@ -1,10 +1,20 @@
-import { Entity, ObjectId, Column, Index, ObjectIdColumn } from 'typeorm';
+import { Order } from '../../order/entities/order.entity';
+import { User } from '../../user/entities/user.entity';
+import {
+    Entity,
+    Column,
+    Index,
+    PrimaryGeneratedColumn,
+    OneToMany,
+    ManyToOne,
+} from 'typeorm';
 
 export enum CardType {
     CREATURE = 'creature',
     ACTION = 'action',
     SPELL = 'spell',
     ITEM = 'item',
+    LAND = 'land',
 }
 
 export enum CardColor {
@@ -12,12 +22,13 @@ export enum CardColor {
     BLUE = 'blue',
     GREEN = 'green',
     RED = 'red',
+    WHITE = 'white',
 }
 
 @Entity()
 export class Card {
-    @ObjectIdColumn()
-    id: ObjectId;
+    @PrimaryGeneratedColumn('increment')
+    id: number;
 
     @Column()
     @Index({ unique: true })
@@ -26,22 +37,36 @@ export class Card {
     @Column()
     cost: number;
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: CardType,
+        default: CardType.LAND,
+    })
     type: CardType;
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: CardColor,
+        default: CardColor.WHITE,
+    })
     color: CardColor;
 
     @Column()
     description: string;
 
-    @Column()
+    @Column('text', { array: true })
     habilities: string[];
 
-    @Column()
+    @Column('jsonb')
     stats: {
         hp: number;
         defense: number;
         atack: number;
     };
+
+    @ManyToOne(() => User, (user) => user.cards)
+    owner: User;
+
+    @OneToMany(() => Order, (order) => order.card)
+    cardOrders: Order[];
 }

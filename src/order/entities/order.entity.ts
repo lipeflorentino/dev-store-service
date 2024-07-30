@@ -1,8 +1,13 @@
+import { Card } from '../../card/entities/card.entity';
+import { User } from '../../user/entities/user.entity';
+import { IsEmail } from 'class-validator';
 import {
     Column,
     CreateDateColumn,
     Entity,
     Index,
+    JoinColumn,
+    ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -14,23 +19,25 @@ export enum OrderStatus {
 
 @Entity()
 export class Order {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column()
     price: number;
 
-    @Column()
+    @Column({ default: 'market@gmail.com' })
     @Index()
-    vendorId: string;
+    @IsEmail()
+    vendorEmail: string;
+
+    @Column({ default: 'market@gmail.com' })
+    @Index()
+    @IsEmail()
+    costumerEmail: string;
 
     @Column()
     @Index()
-    costumerId: string;
-
-    @Column()
-    @Index()
-    cardId: string;
+    cardTitle: string;
 
     @Column({
         type: 'enum',
@@ -46,4 +53,16 @@ export class Order {
         default: null,
     })
     finishedAt: string;
+
+    @ManyToOne(() => User, (user) => user.vendorOrders)
+    @JoinColumn({ name: 'vendorEmail', referencedColumnName: 'email' })
+    vendor: User;
+
+    @ManyToOne(() => User, (user) => user.costumerOrders)
+    @JoinColumn({ name: 'costumerEmail', referencedColumnName: 'email' })
+    costumer: User;
+
+    @ManyToOne(() => Card, (card) => card.cardOrders)
+    @JoinColumn({ name: 'cardTitle', referencedColumnName: 'title' })
+    card: Card;
 }
