@@ -7,6 +7,7 @@ import {
     PrimaryGeneratedColumn,
     OneToMany,
     ManyToOne,
+    JoinColumn,
 } from 'typeorm';
 
 export enum CardType {
@@ -60,12 +61,19 @@ export class Card {
     @Column('jsonb')
     stats: {
         hp: number;
-        defense: number;
-        atack: number;
+        def: number;
+        ata: number;
+        mana: string;
     };
 
+    @Column({
+        default: 'market',
+    })
+    owner: string;
+
     @ManyToOne(() => User, (user) => user.cards)
-    owner: User;
+    @JoinColumn({ name: 'owner', referencedColumnName: 'nickname' })
+    cardOwner: User;
 
     @OneToMany(() => Order, (order) => order.card)
     cardOrders: Order[];

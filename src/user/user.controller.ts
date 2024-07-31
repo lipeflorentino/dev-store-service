@@ -4,7 +4,7 @@ import {
     Delete,
     Get,
     HttpCode,
-    HttpException,
+    ServiceUnavailableException,
     HttpStatus,
     Logger,
     Param,
@@ -27,6 +27,7 @@ export class UserController {
         try {
             const response = await this.userService.getUser({ email });
             this.logger.log({ response });
+
             return {
                 statusCode: HttpStatus.OK,
                 message: 'retrieved user successfully!',
@@ -34,7 +35,7 @@ export class UserController {
             };
         } catch (error) {
             this.logger.error(JSON.stringify(error));
-            throw new HttpException(error.response, error.status);
+            throw new Error(error.response);
         }
     }
 
@@ -51,7 +52,7 @@ export class UserController {
             };
         } catch (error) {
             this.logger.error(JSON.stringify(error));
-            throw new HttpException(error.response, error.status);
+            throw new ServiceUnavailableException(error.response, error.status);
         }
     }
 
@@ -69,7 +70,7 @@ export class UserController {
             };
         } catch (error) {
             this.logger.error(JSON.stringify(error));
-            throw new HttpException(error.response, error.status);
+            throw new ServiceUnavailableException(error.response, error.status);
         }
     }
 
@@ -92,7 +93,7 @@ export class UserController {
             };
         } catch (error) {
             this.logger.error(JSON.stringify(error));
-            throw new HttpException(error.response, error.status);
+            throw new ServiceUnavailableException(error.response, error.status);
         }
     }
 
@@ -109,7 +110,7 @@ export class UserController {
             };
         } catch (error) {
             this.logger.error(JSON.stringify(error));
-            throw new HttpException(error.response, error.status);
+            throw new ServiceUnavailableException(error.response, error.status);
         }
     }
 }

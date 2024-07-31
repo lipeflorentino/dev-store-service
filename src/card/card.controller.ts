@@ -8,6 +8,8 @@ import {
     Delete,
     HttpCode,
     HttpStatus,
+    Logger,
+    ServiceUnavailableException,
 } from '@nestjs/common';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
@@ -16,38 +18,98 @@ import { GetCardsDTO } from './dto/get-cards.dto';
 
 @Controller('card')
 export class CardController {
+    private logger = new Logger('CardController');
     constructor(private readonly cardService: CardService) {}
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    create(@Body() createCardDto: CreateCardDto) {
-        return this.cardService.create(createCardDto);
+    async create(@Body() createCardDto: CreateCardDto) {
+        try {
+            this.logger.log('Input Received', { createCardDto });
+            const response = await this.cardService.create(createCardDto);
+
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Card created successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error({ error });
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Get()
     @HttpCode(HttpStatus.OK)
-    findAll(@Body() getCardsDTO: GetCardsDTO) {
-        return this.cardService.findAll(getCardsDTO);
+    async findAll(@Body() getCardsDTO: GetCardsDTO) {
+        try {
+            this.logger.log('Input Received', { getCardsDTO });
+            const response = await this.cardService.findAll(getCardsDTO);
+            return {
+                statusCode: HttpStatus.ACCEPTED,
+                message: 'retrieved successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error({ error });
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Get(':title')
     @HttpCode(HttpStatus.OK)
-    findOne(@Param('title') title: string) {
-        return this.cardService.findOne(title);
+    async findOne(@Param('title') title: string) {
+        try {
+            this.logger.log('Input Received', { title });
+            const response = await this.cardService.findOne(title);
+            return {
+                statusCode: HttpStatus.ACCEPTED,
+                message: 'retrieved successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error({ error });
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Patch(':title')
     @HttpCode(HttpStatus.OK)
-    update(
+    async update(
         @Param('title') title: string,
         @Body() updateCardDto: UpdateCardDto,
     ) {
-        return this.cardService.update(title, updateCardDto);
+        try {
+            this.logger.log('Input Received', { title, updateCardDto });
+            const response = await this.cardService.update(
+                title,
+                updateCardDto,
+            );
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'updated successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error({ error });
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Delete(':title')
     @HttpCode(HttpStatus.OK)
-    delete(@Param('title') title: string) {
-        return this.cardService.delete(title);
+    async delete(@Param('title') title: string) {
+        try {
+            this.logger.log('Input Received', { title });
+            const response = await this.cardService.delete(title);
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'deleted successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error({ error });
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 }

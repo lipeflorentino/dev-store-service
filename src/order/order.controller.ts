@@ -9,7 +9,7 @@ import {
     Logger,
     HttpStatus,
     HttpCode,
-    HttpException,
+    ServiceUnavailableException,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -34,27 +34,81 @@ export class OrderController {
             };
         } catch (error) {
             this.logger.error(error);
-            throw new HttpException(error.response, error.status);
+            throw new ServiceUnavailableException(error.response, error.status);
         }
     }
 
     @Get()
-    findAll() {
-        return this.orderService.findAll();
+    @HttpCode(HttpStatus.OK)
+    async findAll() {
+        try {
+            this.logger.log('Input received');
+            const response = await this.orderService.findAll();
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'retrieved successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error(error);
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.orderService.findOne(+id);
+    @HttpCode(HttpStatus.OK)
+    async findOne(@Param('id') id: string) {
+        try {
+            this.logger.log('Input received', { id });
+            const response = await this.orderService.findOne(+id);
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'retrieved successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error(error);
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-        return this.orderService.update(+id, updateOrderDto);
+    @HttpCode(HttpStatus.OK)
+    async update(
+        @Param('id') id: string,
+        @Body() updateOrderDto: UpdateOrderDto,
+    ) {
+        try {
+            this.logger.log('Input received', { id, updateOrderDto });
+            const response = await this.orderService.update(
+                +id,
+                updateOrderDto,
+            );
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'updated successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error(error);
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.orderService.remove(+id);
+    @HttpCode(HttpStatus.OK)
+    async delete(@Param('id') id: string) {
+        try {
+            this.logger.log('Input received', { id });
+            const response = await this.orderService.delete(+id);
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'deleted successfully!',
+                data: response,
+            };
+        } catch (error) {
+            this.logger.error(error);
+            throw new ServiceUnavailableException(error.response, error.status);
+        }
     }
 }

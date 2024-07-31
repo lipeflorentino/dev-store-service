@@ -6,7 +6,7 @@ export class CreateCardDto {
     cost: number;
 
     @IsNotEmpty()
-    tittle: string;
+    title: string;
 
     @IsNotEmpty()
     type: CardType;
@@ -19,6 +19,9 @@ export class CreateCardDto {
 
     @IsNotEmpty()
     habilities: string[];
+
+    @IsNotEmpty()
+    owner: string;
 
     stats: {
         hp: number;

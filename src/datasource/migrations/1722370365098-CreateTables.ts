@@ -64,7 +64,7 @@ export class CreateTables1722367251372 implements MigrationInterface {
                     },
                     {
                         name: 'cost',
-                        type: 'int',
+                        type: 'decimal',
                     },
                     {
                         name: 'type',
@@ -105,7 +105,7 @@ export class CreateTables1722367251372 implements MigrationInterface {
             'card',
             new TableForeignKey({
                 columnNames: ['owner'],
-                referencedColumnNames: ['email'],
+                referencedColumnNames: ['nickname'],
                 referencedTableName: 'user',
                 onDelete: 'SET DEFAULT',
             }),
@@ -186,7 +186,7 @@ export class CreateTables1722367251372 implements MigrationInterface {
                 columnNames: ['cardTitle'],
                 referencedColumnNames: ['title'],
                 referencedTableName: 'card',
-                onDelete: 'SET DEFAULT',
+                onDelete: 'CASCADE',
             }),
         );
     }

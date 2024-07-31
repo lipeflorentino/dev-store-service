@@ -1,6 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import { DATA_SOURCE } from '../constants';
 import { DataSource } from 'typeorm';
+import { Card } from '../card/entities/card.entity';
+import { Order } from '../order/entities/order.entity';
+import { User } from '../user/entities/user.entity';
 
 export const DatasourceProviders = [
     {
@@ -13,8 +16,9 @@ export const DatasourceProviders = [
                 username: configService.get<string>('DATABASE_USER'),
                 password: configService.get<string>('DATABASE_PASSWORD'),
                 database: configService.get<string>('DATABASE_NAME'),
-                entities: ['src/**/*.entity.js'],
-                synchronize: false, // Desativar em produção
+                entities: [Card, User, Order],
+                synchronize: false,
+                logging: false,
             });
             return dataSource.initialize();
         },

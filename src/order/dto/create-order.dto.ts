@@ -6,12 +6,12 @@ export class CreateOrderDto {
 
     @IsEmail()
     @IsNotEmpty()
-    vendorId: string;
+    vendorEmail: string;
 
     @IsEmail()
     @IsNotEmpty()
-    costumerId: string;
+    costumerEmail: string;
 
     @IsNotEmpty()
-    cardId: string;
+    cardTitle: string;
 }

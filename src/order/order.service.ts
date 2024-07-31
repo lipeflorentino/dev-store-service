@@ -20,19 +20,19 @@ export class OrderService {
         return this.orderRepository.save(newOrder);
     }
 
-    findAll() {
-        return `This action returns all order`;
+    async findAll() {
+        return this.orderRepository.find();
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} order`;
+    async findOne(id: number) {
+        return this.orderRepository.findOne({ where: { id } });
     }
 
-    update(id: number, updateOrderDto: UpdateOrderDto) {
-        return `This action updates a #${id} order` + updateOrderDto;
+    async update(id: number, updateOrderDto: UpdateOrderDto) {
+        return this.orderRepository.update(id, updateOrderDto);
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} order`;
+    async delete(id: number) {
+        return this.orderRepository.softDelete(id);
     }
 }
